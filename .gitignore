@@ -1,0 +1,9 @@
+.vscode/
+result/
+packages/
+CMakeFiles/
+_CPack_Packages/
+*.cmake
+*.txt
+Makefile
+version.h

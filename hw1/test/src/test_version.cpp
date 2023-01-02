@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE test_version
 
-#include <hello_world/lib/lib.h>
+#include <hw1/lib/lib.h>
 
 #include <boost/test/unit_test.hpp>
 

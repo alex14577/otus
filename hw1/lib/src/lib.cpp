@@ -1,4 +1,4 @@
-#include <hello_world/lib/lib.h>
+#include <hw1/lib/lib.h>
 
 #include <version.h>
 

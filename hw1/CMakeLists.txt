@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(hello_world VERSION ${PROJECT_VESRION})
+project(hw1 VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
@@ -19,8 +19,9 @@ set (   SOURCES_LIB
         ${PROJECT_NAME}/lib/src/lib.cpp
     )
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/result/${PROJECT_NAME}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/result/${PROJECT_NAME}/lib)
+set(CPACK_OUTPUT_FILE_PREFIX ${CMAKE_BINARY_DIR}/packages)
 
 add_executable(helloworld_cli ${SOURCES_MAIN})
 add_library(helloworld ${SOURCES_LIB})
@@ -28,13 +29,11 @@ add_library(helloworld ${SOURCES_LIB})
 set_target_properties(helloworld_cli PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
-    EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin"
     
 )
 set_target_properties(helloworld PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
-    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib"
 )
 
 target_include_directories(helloworld_cli
