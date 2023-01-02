@@ -17,6 +17,8 @@ jobs:
       - run: cmake --build .
       - run: cmake --build . --target test
       - run: cmake --build . --target package
+      - name: ZIP build
+        run: zip -r hw1-0.0.${{ github.run_number }}.zip hw1
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,3 +40,15 @@ jobs:
           asset_path: ./packages/hw1-0.0.${{ github.run_number }}-Linux.deb, hw1
           asset_name: hw1-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
+          name: ZIP build
+      - name: Upload Src
+        id: upload-src
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./hw1-0.0.${{ github.run_number }}.zip
+          asset_name: hw1-0.0.${{ github.run_number }}.zip
+          asset_content_type: application/zip
+
