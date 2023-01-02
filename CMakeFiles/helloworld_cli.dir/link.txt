@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/helloworld_cli.dir/hello_world/main/src/main.cpp.o -o hw1/bin/helloworld_cli  hw1/lib/libhelloworld.a 
