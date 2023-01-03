@@ -7,3 +7,4 @@ _CPack_Packages/
 *.txt
 Makefile
 version.h
+Testing/

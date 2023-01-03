@@ -6,11 +6,15 @@ set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 project(hw1 VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
+option(WITH_GTEST "Whether to build Google test" ON)
 
 configure_file(version.h.in version.h)
 
 set (   SOURCES_MAIN 
         ${PROJECT_NAME}/main/src/main.cpp
+    )
+set (   SOURCES_GTEST 
+        ${PROJECT_NAME}/test/src/gtest_version.cpp
     )
 set (   SOURCES_TEST 
         ${PROJECT_NAME}/test/src/test_version.cpp
@@ -72,6 +76,31 @@ if(WITH_BOOST_TEST)
     )
 endif()
 
+if(WITH_GTEST)
+    include(GoogleTest)
+    find_package(GTest REQUIRED)
+    add_executable(gtest_version ${SOURCES_GTEST})
+
+    set_target_properties(gtest_version PROPERTIES
+        CXX_STANDARD 14
+        CXX_STANDARD_REQUIRED ON
+    )
+
+    set_target_properties(gtest_version PROPERTIES
+        COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
+        INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+    )
+
+    target_include_directories(gtest_version
+        PRIVATE "${CMAKE_BINARY_DIR}"
+    )
+
+    target_link_libraries(gtest_version
+        GTest::gtest_main
+        helloworld
+    )
+endif()
+
 if (MSVC)
     target_compile_options(helloworld_cli PRIVATE
         /W4
@@ -110,4 +139,5 @@ include(CPack)
 if(WITH_BOOST_TEST)
     enable_testing()
     add_test(test_version ${EXECUTABLE_OUTPUT_PATH}/test_version)
+    add_test(gtest_version ${EXECUTABLE_OUTPUT_PATH}/gtest_version)
 endif()
