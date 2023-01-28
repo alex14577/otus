@@ -62,7 +62,7 @@ void SortIpPool(vector<IpAddress>& ipPool)
             bool result{true};
             
             for(IpAddress::size_type part = 0;
-                part < l.size(), part < r.size(); 
+                part < l.size() && part < r.size(); 
                 part++
             )
             {
