@@ -61,7 +61,7 @@ void SortIpPool(vector<IpAddress>& ipPool)
         {
             bool result{true};
             
-            for(int part = 0;
+            for(IpAddress::size_type part = 0;
                 part < l.size(), part < r.size(); 
                 part++
             )
@@ -97,7 +97,7 @@ void SortIpPool(vector<IpAddress>& ipPool)
 
 }
 
-bool PrintAll(const IpAddress& addr)
+bool PrintAll(const IpAddress&)
 {
     return true;
 }
