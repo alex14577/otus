@@ -38,23 +38,6 @@ vector<IpAddress> Init()
         return ipPool;
 }
 
-int CmpStr(string& l, string& r)
-{
-    auto rSize = r.size();
-    auto lSize = l.size();
-
-    if(lSize < rSize)
-    {
-        return -1;
-    }
-    if(lSize > rSize)
-    {
-        return 1;
-    }
-
-    return l.compare(r);
-};
-
 void SortIpPool(vector<IpAddress>& ipPool)
 {
     auto cmpAddr = [](IpAddress& l, IpAddress& r)
@@ -66,23 +49,23 @@ void SortIpPool(vector<IpAddress>& ipPool)
                 part++
             )
             {
-                auto cmpStr = [&]()
+                auto rSize = r[part].size();
+                auto lSize = l[part].size();
+                int res;
+
+                if(lSize < rSize)
                 {
-                    auto rSize = r[part].size();
-                    auto lSize = l[part].size();
+                    res = -1;
+                }
+                else if(lSize > rSize)
+                {
+                    res = 1;
+                }
+                else
+                {
+                    res = l[part].compare(r[part]);
+                }
 
-                    if(lSize < rSize)
-                    {
-                        return -1;
-                    }
-                    if(lSize > rSize)
-                    {
-                        return 1;
-                    }
-
-                    return l[part].compare(r[part]);
-                };
-                int res = cmpStr();
                 if(res != 0)
                 {
                     result = res < 0 ? false : true;
@@ -94,7 +77,6 @@ void SortIpPool(vector<IpAddress>& ipPool)
         };
 
     sort(ipPool.begin(), ipPool.end(), cmpAddr);
-
 }
 
 bool PrintAll(const IpAddress&)
