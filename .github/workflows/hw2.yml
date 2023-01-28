@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           artifacts: "hw2/*"
-          tag_name: ${{ github.run_number }}
+          tag_name: hw2_${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
           draft: false
           prerelease: false
