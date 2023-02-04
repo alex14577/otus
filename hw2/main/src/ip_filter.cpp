@@ -126,7 +126,7 @@ int main(int , char const *[])
         auto ipPool{ Init() };
         SortIpPool(ipPool);
 
-        for(auto& toPrint : {&PrintAll, &PrintFirstIs1, &Print46_70})
+        for(auto& toPrint : {&PrintAll, &PrintFirstIs1, &Print46_70, &Print46Any})
         {
             Print(ipPool, toPrint);
         }

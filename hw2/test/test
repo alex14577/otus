@@ -4,8 +4,9 @@ res="$(</dev/stdin)"
 md5sum="24e7a7b2270daee89c64d3ca5fb3da1a  -"
 
 if [[ $res == $md5sum ]]; then
+  echo "Success"
   exit 0
 else
-  echo "Test Failes"
+  echo "Test Failed. CheckSum is wrong"
   exit 1
 fi
