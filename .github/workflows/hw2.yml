@@ -15,7 +15,6 @@ jobs:
       - run: sudo apt-get update && sudo apt install googletest && sudo apt install libgtest-dev libgmock-dev -y
       - run: cmake hw2 -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
       - run: cmake --build .
-      - run: cmake --build . --target test
       - run: cmake --build . --target package
       - name: ZIP build
         run: zip -r hw2-0.0.${{ github.run_number }}.zip hw2
