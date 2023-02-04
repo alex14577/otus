@@ -19,6 +19,9 @@ jobs:
       - run: cmake --build . --target package
       - name: ZIP build
         run: zip -r hw2-0.0.${{ github.run_number }}.zip hw2
+      - name: Test
+        run: cat hw2/ip_filter.tsv | result/hw2/bin/ip_filter | md5sum |  ./hw2/test/test
+        shell: bash
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
