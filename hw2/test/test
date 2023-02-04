@@ -6,5 +6,6 @@ md5sum="24e7a7b2270daee89c64d3ca5fb3da1a  -"
 if [[ $res == $md5sum ]]; then
   exit 0
 else
+  echo "Test Failes"
   exit 1
 fi
