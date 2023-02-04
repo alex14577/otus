@@ -12,14 +12,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - run: sudo apt-get update && sudo apt install googletest && sudo apt install libgtest-dev libgmock-dev -y
-      - run: cmake hw2 -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
+      - run: cmake hw2 -DPATCH_VERSION=${{ github.run_number }}
       - run: cmake --build .
       - run: cmake --build . --target package
-      - name: ZIP build
-        run: zip -r hw2-0.0.${{ github.run_number }}.zip hw2
       - name: Test
         run: cat hw2/ip_filter.tsv | result/hw2/bin/ip_filter | md5sum |  ./hw2/test/test
+      - name: ZIP build
+        run: zip -r hw2-0.0.${{ github.run_number }}.zip hw2
         shell: bash
       - name: Create Release
         id: create_release
