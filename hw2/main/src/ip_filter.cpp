@@ -77,7 +77,6 @@ void SortIpPool(vector<IpAddress>& ipPool)
         );
 }
 
-
 void Print(const vector<IpAddress>& ipPool, bool toPrint(const IpAddress &addr))
 {
         for(const auto& ip : ipPool)
