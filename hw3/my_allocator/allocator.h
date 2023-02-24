@@ -1,75 +1,117 @@
 #include <exception>
 #include <type_traits>
 #include <malloc.h>
+#include <memory>
+#include <algorithm>
+#include <bitset>
 
-#ifdef DEBUG
+#include <vector>
+
 #include <iostream>
-#endif
 
 namespace my_alloc
 {
-template <typename T>
+template <typename T, size_t N>
 class MyAlloc
 {
 public:
     using value_type = T;
-    MyAlloc() {}
+    using pointer = T*;
+    using const_pointer    = const T*;
+    using reference        = T&;
+    MyAlloc() = default;
 
-    template <typename U>
-    MyAlloc(const MyAlloc<U>& ) 
+    MyAlloc(const MyAlloc& other)
     {
-#ifdef DEBUG
-        std::cout << "copy crt " << typeid(U).name() << std::endl;
-#endif
+        pool_ = other.pool_;
+        isBusy_ = other.isBusy_;
     }
     template <typename U>
-    MyAlloc(const MyAlloc<U>&& ) 
+    MyAlloc(MyAlloc<U, N>&& other)
     {
-#ifdef DEBUG
-        std::cout << "move crt " <<typeid(U).name() <<  std::endl;
-#endif
+        pool_.swap(other.pool_);
+        isBusy_.swap(other.isBusy_);
+    }
+    ~MyAlloc() = default;
+
+    constexpr bool operator ==(MyAlloc& other)
+    {
+        return pool_ == other.pool_;
     }
 
     template<typename T1>
 	struct rebind
-	{ typedef MyAlloc<T1> other; };
+	{ typedef MyAlloc<T1, N> other; };
 
     T* allocate(unsigned long n)
-    {
-#ifdef DEBUG
-        std::cout << "allocate" << " n = " << n << " size = " << sizeof(T) << std::endl;
-#endif
-        auto p = malloc(n * sizeof(T));
-        if(!p)
+    {        
+        if(!pool_) // Зашли 1-ый раз
         {
-            throw std::bad_alloc();
+            Init();
         }
-        return reinterpret_cast<T*>(p);
+
+        auto it = FindPlace(n);
+        if( it != N) 
+        {
+            Fill(it, n, true);
+            return &pool_.get()[it];
+        }
+        throw std::bad_alloc();
     }
     void deallocate(T* p, unsigned long n)
     {
-        (void)(n);
-#ifdef DEBUG
-        std::cout << "deallcate" << " n = " << n << std::endl ;
-#endif
-        free(p);
-    }
-    
-    template<typename U, typename ...Args>
-    void construct(U* p, Args &&...args) 
-    {
-#ifdef DEBUG
-        std::cout << "construct" << std::endl;
-#endif
-        new(p) U(std::forward<Args>(args)...);
+        if(p && (n > 0))
+        {
+            auto first = p - pool_.get();
+            Fill(first, n, false);
+        }
     }
 
-    void destroy(T* p)
+private:
+    std::shared_ptr<T[]> pool_{nullptr};
+    std::shared_ptr<std::bitset<N>> isBusy_;
+
+    void Init()
     {
-#ifdef DEBUG
-        std::cout << "destroy" << " " << std::endl;
-#endif
-        p->~T();
+        pool_.reset(new value_type[N]);
+        if(!pool_)
+        {
+            throw std::bad_alloc();
+        }
+        isBusy_.reset(new std::bitset<N>(0));
+    }
+
+    void Fill(int first, int n, bool val)
+    {
+        auto& isBusy = (*isBusy_.get());
+        for(auto i = first; i < first + n; ++i)
+        {
+            isBusy[i] = val;
+        }
+    }
+    int FindPlace(int num)
+    {
+        decltype(N) it{0};
+        auto& isBusy = (*isBusy_.get());
+        while(it < N)
+        {
+            int spaceWidth{0};
+            auto begin = it;
+            while(spaceWidth < num && isBusy[it] == false && it < N)
+            {
+                spaceWidth++;
+                it++;
+            }
+            if(spaceWidth == num)
+            {
+                return begin;
+            }
+            it++;
+        }
+        return N;
     }
 };
+
+
 }
+

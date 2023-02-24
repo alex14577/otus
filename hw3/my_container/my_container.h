@@ -10,43 +10,28 @@ namespace my_container
         using iterator = T*;
         using size_type = size_t;
         using allocator_type = AllocT;
+        using const_iterator = const T*;
 
         Container() = default;
 
-        Container(Container& other)
+        Container(const Container& other)
         {
-#ifdef DEBUG
-            std::cout << "Container Copy Ctr" << std::endl;
-#endif
-            storage_ = alloc_.allocate(other.size());
-            if(!other.empty())
-            {
-                std::copy(other.begin(), other.end(), storage_);
-            }
+            Copy(other);
         }
         Container(Container&& other)
         {
-#ifdef DEBUG
-            std::cout << "Container Move Ctr" << std::endl;
-#endif
             if(!other.empty())
             {
-                storage_.swap(other);
-                capacity_ = other.capacity_;
-                size_ = other.size_;
-                other.size_= 0;
-                other.capacity_= 0;
+                std::swap(storage_, other.storage_);
+                std::swap(alloc_, other.alloc_);
+                std::swap(size_, other.size_);
+                std::swap(capacity_, other.capacity_);
             }
-
-            std::copy(other.begin(), other.end(), storage_);
         }
         Container(const iterator first, const  iterator last)
         {
-#ifdef DEBUG
-            std::cout << "Range Copy Ctr" << std::endl;
-#endif
             const size_type num = std::distance(first, last);
-            storage_.reset(alloc_.allocate(num));
+            storage_ = alloc_.allocate(num);
 
             iterator it = first;
             size_type cnt{0};
@@ -59,58 +44,48 @@ namespace my_container
         }
         ~Container()
         {
-#ifdef DEBUG
-            std::cout << "Dtr" << std::endl;
-#endif
-            iterator it = storage_;
-            iterator end = &storage_[size_];
-            while(it != end)
-            {
-                alloc_.destroy(it);
-                ++it;
-            }
-            alloc_.deallocate(storage_, size_);
+            ClearContainer();
         }        
 
-        iterator begin() { return storage_; }
-        iterator end() {return empty() ? nullptr : &storage_[size_];}
+        iterator begin() const { return storage_; }
+        iterator end() const {return empty() ? nullptr : &storage_[size_];}
+        const_iterator cbegin() const { return storage_; }
+        const_iterator cend() const {return empty() ? nullptr : &storage_[size_];}
 
-        void push_back(T el)
+        void push_back(const T& el)
         {
             if(size_ == capacity_)
             {
-                size_type newCapacity = size_ == 0? 1 : size_ * mlt_;
+                size_type newCapacity = size_ == 0 ? 1 : size_ * mlt_;
                 iterator p = alloc_.allocate(newCapacity);
                 capacity_ = newCapacity;
                 
-                iterator dst{p};
-                iterator src{storage_};
-                iterator end{&storage_[size_]};
-                while(src != end)
-                {
-                    alloc_.construct(dst, *src);
-                    alloc_.destroy(src);
-                    ++src;
-                    ++dst;
-                }
+                std::copy(storage_, storage_ + size_, p);
+
                 if(size_)
                 {
                     alloc_.deallocate(storage_, size_);
                 }
                 storage_ = p;
             }
-            alloc_.construct(&storage_[size_], el);
-            ++size_;
 
+            storage_[size_] = el;
+            ++size_;
         }
 
         T& operator [] (size_type n)
         {
             return storage_[n];
         }
-        
-        bool empty(){ return size_ == 0; }
-        size_type size(){ return size_; }
+
+        Container& operator =(const Container& other)
+        {
+            Copy(other);
+            return *this;
+        }
+
+        bool empty() const { return size_ == 0; }
+        size_type size() const { return size_; }
 
         
     private:
@@ -119,5 +94,39 @@ namespace my_container
         size_type capacity_{0};
         allocator_type alloc_;
         static constexpr size_type mlt_ = 2;
+
+        void Copy(const Container& other)
+        {
+            ClearContainer();
+            if(!other.empty())
+            {
+                storage_ = alloc_.allocate(other.size());   
+                std::copy(other.cbegin(), other.cend(), storage_);
+                size_ = other.size_;
+                capacity_ = size_;
+            }
+        }
+
+        void ClearContainer()
+        {
+            if(size_)
+            {
+                if constexpr(!std::is_scalar<T>::value)
+                {
+                    iterator it = storage_;
+                    iterator end = &storage_[size_];
+                    while(it != end)
+                    {
+                        it->~T();
+                        ++it;
+                    }
+                }
+
+                alloc_.deallocate(storage_, size_);
+                size_ = 0;
+                capacity_ = 0;
+                storage_ = nullptr;
+            }
+        }
     };
 }
