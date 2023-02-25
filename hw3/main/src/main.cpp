@@ -82,7 +82,7 @@ void TestContainer()
 
     for(int i = 0; i < ElNum / 2; ++i)
     {
-        m = AddVal(m, i);
+        m = AddVal(m, i); // Тест копирования и перемещения
     }
     for(int i = ElNum / 2; i < ElNum; ++i)
     {
@@ -93,6 +93,7 @@ void TestContainer()
 
 void TestStdVec()
 {
+    // Почему-то стандартный вектор требует больше памяти.
     using Vec = std::vector<int, MyAlloc<int, ElNum * 5 + 1>>;
 
     auto addVal = +[](Vec v, int i) ->  Vec

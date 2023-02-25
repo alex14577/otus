@@ -15,10 +15,10 @@ template <typename T, size_t N>
 class MyAlloc
 {
 public:
-    using value_type = T;
-    using pointer = T*;
-    using const_pointer    = const T*;
-    using reference        = T&;
+    using value_type        = T;
+    using pointer           = T*;
+    using const_pointer     = const T*;
+    using reference         = T&;
     MyAlloc() = default;
 
     MyAlloc(const MyAlloc& other)
@@ -34,7 +34,7 @@ public:
     }
     ~MyAlloc() = default;
 
-    constexpr bool operator ==(MyAlloc& other)
+    constexpr bool operator ==(const MyAlloc& other)
     {
         return pool_ == other.pool_;
     }
