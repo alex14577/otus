@@ -11,9 +11,6 @@ configure_file(version.h.in version.h)
 set (   SOURCES_MAIN 
         main/src/main.cpp
     )
-set (   SOURCES_LIB 
-        my_allocator/src/allocator.cpp
-    )
 set (   SOURCES_GTEST 
     ${PROJECT_NAME}/test/src/test_main.cpp 
     ${PROJECT_NAME}/test/src/test_container.cpp 
@@ -21,7 +18,6 @@ set (   SOURCES_GTEST
     )
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/result/${PROJECT_NAME}/bin)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/result/${PROJECT_NAME}/lib)
 set(CPACK_OUTPUT_FILE_PREFIX ${CMAKE_BINARY_DIR}/packages)
 
 add_executable(allocator ${SOURCES_MAIN})
@@ -42,18 +38,18 @@ target_compile_options(allocator PRIVATE
 if(WITH_GTEST)
     include(GoogleTest)
     find_package(GTest REQUIRED)
-    add_executable(test ${SOURCES_GTEST})
+    add_executable(gtest ${SOURCES_GTEST})
 
-    set_target_properties(test PROPERTIES
+    set_target_properties(gtest PROPERTIES
         CXX_STANDARD 20
         CXX_STANDARD_REQUIRED ON
     )
 
-    target_include_directories(test
+    target_include_directories(gtest
         PRIVATE "${CMAKE_BINARY_DIR}/hw3"
     )
 
-    target_link_libraries(test
+    target_link_libraries(gtest
         GTest::gtest_main
     )
 endif()
@@ -67,7 +63,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
 
-if(WITH_BOOST_TEST)
+if(WITH_GTEST)
     enable_testing()
-    add_test(test ${EXECUTABLE_OUTPUT_PATH}/test)
+    add_test(gtest ${EXECUTABLE_OUTPUT_PATH}/gtest)
 endif()
