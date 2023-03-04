@@ -82,7 +82,7 @@ namespace my_container
 
         bool operator==(const Container& other) const
         {
-            if(size_ != her.size())
+            if(size_ != other.size()) 
             {
                 return false;
             }
