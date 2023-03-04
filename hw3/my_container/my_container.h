@@ -33,12 +33,8 @@ namespace my_container
             const size_type num = std::distance(first, last);
             storage_ = alloc_.allocate(num);
 
-            iterator it = first;
-            size_type cnt{0};
-            while(it != last)
-            {
-                alloc_.construct(&storage_[cnt++], it);
-            }
+            std::copy(first, last, storage_);
+
             size_ = num;
             capacity_ = num;
         }
@@ -82,6 +78,15 @@ namespace my_container
         {
             Copy(other);
             return *this;
+        }
+
+        bool operator==(const Container& other) const
+        {
+            if(size_ != her.size())
+            {
+                return false;
+            }
+            return std::equal(begin(), end(), other.begin());
         }
 
         bool empty() const { return size_ == 0; }
