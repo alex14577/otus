@@ -1,0 +1,54 @@
+name: 'C++ CI'
+
+on:
+  push:
+    paths:
+      - 'hw4/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: sudo apt-get update && sudo apt install googletest && sudo apt install libgtest-dev libgmock-dev -y
+      - run: cmake hw4 -DPATCH_VERSION=${{ github.run_number }} -DWITH_GTEST=ON
+      - run: cmake --build .
+      - run: cmake --build . --target test
+      - run: cmake --build . --target package
+      - name: ZIP build
+        run: zip -r hw4-0.0.${{ github.run_number }}.zip hw4
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          artifacts: "hw4/*"
+          tag_name: hw4_${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./packages/hw4-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: hw4-0.0.${{ github.run_number }}-Linux.deb
+          asset_content_type: application/vnd.debian.binary-package
+          name: ZIP build
+      - name: Upload Src
+        id: upload-src
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./hw4-0.0.${{ github.run_number }}.zip
+          asset_name: hw4-0.0.${{ github.run_number }}.zip
+          asset_content_type: application/zip
+
