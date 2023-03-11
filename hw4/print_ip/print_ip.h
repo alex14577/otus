@@ -14,7 +14,7 @@ template<typename T>
 std::array<uint8_t, sizeof(T)> Split(T n)
 {
     std::array<uint8_t, sizeof(T)> res;
-    for(size_t i = sizeof(T) -1; i >= 0; i++)
+    for(size_t i = sizeof(T) - 1; i >= 0; i--)
     {
         res[i] = (n >> (8 * i)) & 0xff;
     }
