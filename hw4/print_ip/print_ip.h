@@ -2,8 +2,6 @@
 
 #include <type_traits>
 
-#include <my_type_traits/my_type_traits.h>
-
 #include <iostream>
 #include <string>
 #include <vector>
