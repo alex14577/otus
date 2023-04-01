@@ -4,9 +4,7 @@ using namespace std;
 
 File::File(string name)
     : name_(name)
-{
-    
-}
+{ }
 
 void File::Push(std::unique_ptr<Figure>& fig)
 {
