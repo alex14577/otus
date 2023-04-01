@@ -4,7 +4,7 @@ set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
 project(hw5 VERSION ${PROJECT_VESRION})
-# option(WITH_GTEST "Whether to build Google test" ON)
+option(WITH_GTEST "Whether to build Google test" ON)
 
 configure_file(version.h.in version.h)
 
