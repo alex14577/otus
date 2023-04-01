@@ -1,0 +1,5 @@
+create abc
+add circle 1 2 3
+add point 45 68
+add line 10 25 25 10
+save file1
