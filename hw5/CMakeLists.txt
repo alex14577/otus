@@ -15,6 +15,7 @@ set (   SOURCES_MAIN
         commands/src/command_create_file.cpp
         commands/src/command_factory.cpp
         commands/src/command_add_figure.cpp
+        commands/src/command_save_file.cpp
         figures/src/circle.cpp
         figures/src/line.cpp
         figures/src/point.cpp
