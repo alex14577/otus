@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: true
       - run: sudo apt-get update && sudo apt install googletest && sudo apt install libgtest-dev libgmock-dev -y
-      - run:  ${{ github.run_number }} -DWITH_GTEST=ON
+      - run: cmake hw5  ${{ github.run_number }} -DWITH_GTEST=ON
       - run: cmake --build .
       - run: cmake --build . --target test
       - run: cmake --build . --target package

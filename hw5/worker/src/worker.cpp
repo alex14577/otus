@@ -51,7 +51,6 @@ void Worker::Run()
         auto args = Split(data);
 
         auto cmd = cmds_->Create(args[0]);
-
         args.erase(args.begin());
 
         if(cmd)
