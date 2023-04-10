@@ -10,7 +10,6 @@ configure_file(version.h.in version.h)
 
 set (   SOURCES_MAIN 
         main/src/main.cpp
-        matrix/src/matrix.cpp
     )
 set (   SOURCES_GTEST 
         test/src/test_main.cpp 
