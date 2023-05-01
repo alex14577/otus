@@ -44,7 +44,7 @@ public:
         {
             if( val != DefaultValue)
             {
-                auto [it, emplaced] = matrix_.values_.emplace(std::make_pair(x_, y_), val);
+                matrix_.values_.emplace(std::make_pair(x_, y_), val);
             }
             else
             {
