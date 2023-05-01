@@ -30,47 +30,43 @@ public:
             , x_(x)
              {}
 
-        T& operator[](size_t y) 
+        operator T() const 
         {
-            CheckTempObj();
-            auto key = std::pair(x_, y);
-            matrix_.curElOut_ = matrix_.values_.find(key);
-            if(matrix_.curElOut_ == matrix_.values_.end())
+            auto it = matrix_.values_.find(std::make_pair(x_, y_));
+            if(it != matrix_.values_.end())
             {
-                matrix_.tempObj_.first = key;
-                matrix_.tempObj_.second = DefaultValue;
-                matrix_.curElOut_ = matrix_.values_.end();
-                return matrix_.tempObj_.second;
+                return it->second;
             }
-            return matrix_.curElOut_->second;
+            return DefaultValue;
         }
 
-        void CheckTempObj()
+        Proxy operator=(const T& val)
         {
-            if(matrix_.tempObj_.second != DefaultValue) // Добавление
+            if( val != DefaultValue)
             {
-                // Добавление, если значение выданной ячейки из Proxy::operator[] изменилось
-                auto& [key, val] = matrix_.tempObj_;
-                matrix_.values_[key] = std::move(val);
-                matrix_.tempObj_.second = DefaultValue;
-                matrix_.size_++;
+                auto [it, emplaced] = matrix_.values_.emplace(std::make_pair(x_, y_), val);
             }
-            else if(matrix_.curElOut_ != matrix_.values_.end()) 
+            else
             {
-                // Удаление, если на предыдущем шаге элементу присвоили значение по умолчанию
-                auto& [key, val] = *matrix_.curElOut_;
-                if(val == DefaultValue)
+                auto it = matrix_.values_.find(std::make_pair(x_, y_));
+                if(it != matrix_.values_.end())
                 {
-                    matrix_.values_.erase(matrix_.curElOut_);
-                    matrix_.size_--;
-                    matrix_.curElOut_ = matrix_.values_.end();
-                }           
+                    matrix_.values_.erase(it);
+                }                
             }
+            return *this;
+        }
+
+        Proxy& operator[](size_t y) 
+        {
+            y_ = y;
+            return *this;
         }
 
     private:
         Matrix& matrix_;
         size_t x_;
+        size_t y_;
     };
 
     class Iterator
@@ -115,27 +111,19 @@ public:
 
     size_t size()
     {
-        Proxy(*this, 0).CheckTempObj();
-        return size_;
+        return values_.size();
     }
 
     Iterator begin()
     {
-        Proxy(*this, 0).CheckTempObj();
         return Iterator(*this, values_.begin());
     }
 
     Iterator end()
     {
-        Proxy(*this, 0).CheckTempObj();
         return Iterator(*this, values_.end());
     }
 
     private:
         std::unordered_map<std::pair<size_t, size_t>, T, PairHash, KeyEqual> values_;
-        size_t size_{0};
-
-         // Хранит x, y, T от предыдущего вызова T& operator[](size_t y) 
-        std::pair<std::pair<size_t,size_t>, T> tempObj_{std::pair<size_t, size_t>(0,0), DefaultValue};
-        iterator curElOut_;
 };

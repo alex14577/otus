@@ -10,7 +10,7 @@ int main()
     Matrix<int, -1> matrix;
     assert(matrix.size() == 0); // все ячейки свободны
 
-    auto a = matrix[0][0];
+    int a = matrix[0][0];
     assert(a == -1);
     assert(matrix.size() == 0);
 
