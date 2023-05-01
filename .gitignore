@@ -7,3 +7,4 @@ Makefile
 version.h
 Testing/
 *.tsv
+/build
