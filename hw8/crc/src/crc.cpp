@@ -17,10 +17,13 @@ size_t CrcMd5Calculator::GetCrc(const vector<uint8_t>& data)
      boost::uuids::detail::md5 md5;
      md5.process_bytes(reinterpret_cast<const void*>( data.data()), data.size());
 
-     boost::uuids::detail::md5::digest_type result;
-     md5.get_digest(result);
-
-     sizeof(boost::uuids::detail::md5::digest_type)
-
-     return md5.checksum();
+     boost::uuids::detail::md5::digest_type digest;
+     md5.get_digest(digest);
+     
+     size_t result = 0;
+     for (int i = 0; i < 8; ++i)
+     {
+          result = (result << 8) | digest[i];
+     }
+     return result;
 }
