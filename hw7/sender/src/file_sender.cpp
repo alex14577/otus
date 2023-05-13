@@ -18,21 +18,23 @@ void FileSender::Update()
 {
      auto time = bulk_->GetTimeFirstCmd();
      array<char, 25> timeCh{0};
-     auto [ptr, ec] = to_chars(timeCh.begin(), timeCh.end(), static_cast<int>(time));
-     (void)(ptr);
+     to_chars(timeCh.begin(), timeCh.end(), static_cast<int>(time));
+
      string filename;
      filename = pathOut_.string() + fs::path::preferred_separator +
          "bulk" + timeCh.data() + ".log";
 
-     struct Closer
+     size_t tryNum = 1;
+     while(fs::exists(filename))
      {
-          void operator()(ofstream& f)
-          {
-               f.close();
-          }
-     };
+          array<char, 25> tryNumCh{0};
+          to_chars(tryNumCh.begin(), tryNumCh.end(), static_cast<int>(tryNum++));
+          filename = pathOut_.string() + fs::path::preferred_separator +
+               "bulk" + timeCh.data() + '_' + tryNumCh.data() + ".log";
+     }
 
      auto data = bulk_->GetData();
+
      ofstream out(filename);
      if(out.is_open())
      {
@@ -43,6 +45,4 @@ void FileSender::Update()
           }
           out << endl;
      }
-
-
 }
