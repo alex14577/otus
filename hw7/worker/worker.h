@@ -5,8 +5,9 @@
 #include <manager/manager.h>
 #include <bulk/bulk.h>
 
-
 #include <memory>
+
+class BulkImpl;
 
 class Worker
 {
@@ -16,9 +17,9 @@ public:
     (
         std::istream& rec,
         std::ostream& sender,
-        std::shared_ptr<Manager> mgr,
+        std::shared_ptr<Manager>& mgr,
         std::unique_ptr<Parser> parser,
-        std::unique_ptr<Bulk> bulk
+        std::shared_ptr<BulkImpl>& bulk
     );
 
     void Run();
@@ -28,5 +29,5 @@ private:
     std::ostream& sender_;
     std::shared_ptr<Manager> mgr_;
     std::unique_ptr<Parser> parser_;
-    std::unique_ptr<Bulk> bulk_;
+    std::shared_ptr<BulkImpl> bulk_;
 };

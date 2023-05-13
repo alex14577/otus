@@ -15,6 +15,7 @@ file(   GLOB_RECURSE SOURCES_MAIN
         "parser/src/*cpp",
         "bulk/src/*cpp",
         "manager/src/*.cpp"
+        "sender/src/*.cpp"
     )
 
 set (   SOURCES_GTEST 

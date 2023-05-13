@@ -4,6 +4,9 @@
 #include <exception>
 #include <worker/worker.h>
 #include <manager/manager.h>
+#include <sender/file_sender.h>
+#include <sender/stdout_sender.h>
+#include <bulk/bulk_impl.h>
 
 using namespace std;
 
@@ -20,10 +23,11 @@ ifstream OpenFile(const char* filePath)
 Worker MakeWorker
 (
     istream& rec,
-    shared_ptr<Manager> mgr
+    shared_ptr<Manager>& mgr,
+    shared_ptr<BulkImpl>& bulk
 )
 {
-    return Worker(rec, std::cout, mgr, move(make_unique<Parser>()), make_unique<Bulk>());
+    return Worker(rec, std::cout, mgr, make_unique<Parser>(), bulk);
 }
 
 int main(int argc, char** argv)
@@ -39,6 +43,7 @@ int main(int argc, char** argv)
             break;
         }
         case(3):
+        case(4):
         {
             cmdBlockNum = atoi(argv[1]);
             try
@@ -63,8 +68,16 @@ int main(int argc, char** argv)
 
     istream& in = rec.is_open() ? rec : std::cin;
 
+    shared_ptr<BulkImpl> bulk = make_shared<BulkImpl>();
+
+    shared_ptr<Sender> fileSender = make_shared<FileSender>(bulk, argc > 3 ? argv[3] : nullptr); 
+    shared_ptr<Sender> stdOutSender = make_shared<StdOutSender>(bulk);
+
+    bulk->Attach(fileSender);
+    bulk->Attach(stdOutSender);
+
     shared_ptr<Manager> mgr = make_shared<Manager>(cmdBlockNum);
-    Worker wrk = MakeWorker(in, mgr);
+    Worker wrk = MakeWorker(in, mgr, bulk);
 
     wrk.Run();
     

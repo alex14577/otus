@@ -1,5 +1,6 @@
 #include <worker/worker.h>
 #include <types/types.h>
+#include <bulk/bulk_impl.h>
 
 #include <string>
 
@@ -39,15 +40,15 @@ Worker::Worker
     (
         istream& rec,
         ostream& sender,
-        std::shared_ptr<Manager> mgr,
+        std::shared_ptr<Manager>& mgr,
         std::unique_ptr<Parser> parser,
-        std::unique_ptr<Bulk> bulk
+        std::shared_ptr<BulkImpl>& bulk
     )
     : receiver_ (rec),
       sender_(sender),
       mgr_(mgr),
       parser_(move(parser)),
-      bulk_ (move(bulk))
+      bulk_ (bulk)
 {}
 
 void Worker::Run()
@@ -74,12 +75,12 @@ void Worker::Run()
         {
             case (Manager::State::NeedExitAndExecute):
             {
-                bulk_->Execute(sender_);
+                bulk_->Execute();
                 return;
             }
             case (Manager::State::NeedExecute):
             {
-                bulk_->Execute(sender_);
+                bulk_->Execute();
                 break;
             }
             case (Manager::State::NeedExit):

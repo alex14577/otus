@@ -1,17 +1,17 @@
 #pragma once
 
-#include <manager/manager.h>
-
-#include <string>
-#include <queue>
+#include <vector>
 #include <memory>
+#include <ctime>
+
+class Sender;
 
 class Bulk
 {
 public:
-    void AddCmd(const std::string& cmd);
-    void Execute(std::ostream& out);
+     virtual ~Bulk() = default;
 
-private:
-    std::queue<std::string> cmds_;    
+     virtual std::vector<std::string_view> GetData() const = 0;
+     virtual std::time_t GetTimeFirstCmd() const = 0;
+     virtual void Attach(const std::shared_ptr<Sender>& sender) = 0;
 };
