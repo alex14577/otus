@@ -70,3 +70,8 @@ set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
+
+if(WITH_GTEST)
+    enable_testing()
+    add_test(gtest ${EXECUTABLE_OUTPUT_PATH}/gtest)
+endif()
