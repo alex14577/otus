@@ -15,7 +15,6 @@ int main(int argc, char** argv)
           std::cout << "Invalid arg" << std::endl;
           std::cout << "Usage:" << argv[0] << " name" << std::endl;
           return -1;
-          // name = "bob";
      }
 
      std::string address = "localhost";
