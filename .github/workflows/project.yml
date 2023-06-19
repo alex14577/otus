@@ -36,8 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./packages/project-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: project-0.0.${{ github.run_number }}-Linux.deb
+          asset_path: ./packages/server_executor-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: server_executor-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
           name: ZIP build
       - name: Upload Src

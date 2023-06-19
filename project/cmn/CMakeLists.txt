@@ -26,5 +26,3 @@ target_include_directories( cmn PUBLIC
 )
 
 target_link_libraries(cmn Poco::Foundation Poco::Util PocoNet PocoCrypto ssl crypto)
-
-# install(TARGETS server RUNTIME DESTINATION bin)
